@@ -16,7 +16,7 @@
   text-align: center;
   color: #2c3e50;
 }
-
+//zdorova
 #nav {
   padding: 30px;
 
