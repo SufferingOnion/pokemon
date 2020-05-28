@@ -3,6 +3,10 @@
     <template v-if="pokemones.length">
       <pocecart v-for="pokemon in pokemones" :pokemon="pokemon" :key="pokemon.id"></pocecart>
     </template>
+    <div>
+      <button v-if="isonScroll" v-on:click="startInfiniteScroll">БОЛЬШЕ ПОКЕМОНОВ!!!</button>
+      
+    </div>
   </div>
 </template>
 
@@ -14,7 +18,8 @@ export default {
   name: "Pocedex",
   data() {
     return {
-      offsetURL: 20
+      offsetURL: 12,
+      isonScrolling: true,
     };
   },
   computed: {
@@ -30,11 +35,11 @@ export default {
   },
   methods: {
     offsetCounter() {
-      return "?offset=" + String(this.offsetURL) + "&limit=20";
+      return "?offset=" + String(this.offsetURL) + "&limit=12";
     },
     async dispatchPokemones() {
       await this.$store.dispatch("get_pokemones", this.offsetCounter());
-      this.offsetURL = this.offsetURL + 20;
+      this.offsetURL = this.offsetURL + 12;
     },
     async scrollHandler() {
       const scrollTop = document.documentElement.scrollTop;
@@ -45,14 +50,18 @@ export default {
       if (atBottom && scrollTop > 50) {
         await this.dispatchPokemones();
       }
+    },
+    startInfiniteScroll(){
+      document.addEventListener("scroll", this.scrollHandler);
+      this.isonScroll = false;
     }
   },
   created() {
     if (this.$store.getters.pokemones.length == 0) {
-      this.$store.dispatch("get_pokemones", "/");
+      this.$store.dispatch("get_pokemones", "?offset=0&limit=12");
     }
 
-    document.addEventListener("scroll", this.scrollHandler);
+    
   },
   beforeDestroy() {
     this.$store.commit("DESTROY");
@@ -63,9 +72,12 @@ export default {
 
 <style lang="scss">
 .Pokedex {
+  position: relative;
+  padding: 0 7%;
   display: grid;
   grid-auto-rows: minmax(300px, auto);
-  @media (max-width: 1038px) {
+  gap: 60px 20px;
+  @media (max-width: 9999px) {
     grid-template-columns: repeat(4, 1fr);
   }
   @media (max-width: 920px) {
@@ -76,6 +88,10 @@ export default {
   }
   @media (max-device-width: 461px) {
     grid-template-columns: repeat(1, 1fr);
+  }
+  button{
+    position: absolute;
+    bottom: 10px;
   }
 }
 </style>

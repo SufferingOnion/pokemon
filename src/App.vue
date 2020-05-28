@@ -28,6 +28,9 @@ body,html,*{
   width: 100vw;
   height: auto;
 }
+*{
+  box-sizing: border-box;
+}
 
 </style>
 
