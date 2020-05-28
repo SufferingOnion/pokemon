@@ -11,13 +11,13 @@ export default {
         },
         ADD_POKEMONES: (state, payload) => {
             state.pokemones = state.pokemones.concat(payload);
-            state.IsLoaded = true;
+            state.IsLoaded = false;
         },
         ISLOADED: (state, payload) => {
             state.IsLoaded = payload
         },
         DESTROY: (state) => {
-            state.pokemones.splice(20, state.pokemones.length)
+            state.pokemones.splice(12, state.pokemones.length)
         }
     },
     getters: {
@@ -30,6 +30,7 @@ export default {
     },
     actions: {
         get_pokemones: async (context, payload) => {
+            context.commit('ISLOADED', true)
             console.log(context.state.baseURL + payload)
             fetch(context.state.baseURL + payload, {
                 method: 'GET',

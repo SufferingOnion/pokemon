@@ -1,11 +1,13 @@
 <template>
-  <div class="Pokedex">
-    <template v-if="pokemones.length">
-      <pocecart v-for="pokemon in pokemones" :pokemon="pokemon" :key="pokemon.id"></pocecart>
-    </template>
-    <div>
-      <button v-if="isonScroll" v-on:click="startInfiniteScroll">БОЛЬШЕ ПОКЕМОНОВ!!!</button>
-      
+  <div>
+    <div class="Pokedex">
+      <template v-if="pokemones.length">
+        <pocecart v-for="pokemon in pokemones" :pokemon="pokemon" :key="pokemon.id"></pocecart>
+      </template>
+    </div>
+    <div class="preloader">
+      <button v-if="isonScrolling&&pokemones.length" v-on:click="startInfiniteScroll">БОЛЬШЕ ПОКЕМОНОВ!!!</button>
+      <img v-show="IsLoaded" src="../assets/loading.svg" alt="preloader" />
     </div>
   </div>
 </template>
@@ -51,17 +53,15 @@ export default {
         await this.dispatchPokemones();
       }
     },
-    startInfiniteScroll(){
+    startInfiniteScroll() {
       document.addEventListener("scroll", this.scrollHandler);
-      this.isonScroll = false;
+      this.isonScrolling = false;
     }
   },
   created() {
     if (this.$store.getters.pokemones.length == 0) {
       this.$store.dispatch("get_pokemones", "?offset=0&limit=12");
     }
-
-    
   },
   beforeDestroy() {
     this.$store.commit("DESTROY");
@@ -72,7 +72,6 @@ export default {
 
 <style lang="scss">
 .Pokedex {
-  position: relative;
   padding: 0 7%;
   display: grid;
   grid-auto-rows: minmax(300px, auto);
@@ -89,9 +88,30 @@ export default {
   @media (max-device-width: 461px) {
     grid-template-columns: repeat(1, 1fr);
   }
-  button{
-    position: absolute;
-    bottom: 10px;
+}
+@keyframes preloader {
+from {transform: rotate(0deg)}
+to {transform: rotate(360deg)}
+}
+.preloader {
+display: flex;
+flex-flow: column nowrap;
+align-items: center;
+padding-top: 10vw;
+padding-bottom: 10vw;
+  button {
+    cursor: pointer;
+    border: 0;
+    border-radius: 4px;
+    background-color: #30a7d7;
+    color: #fff;
+    padding: 5px 20px;
+    font-family: "Roboto",sans-serif;
+    font-weight: bold;
+  }
+  img {
+    width: 5vw;
+    animation: preloader .5s linear infinite;
   }
 }
 </style>
