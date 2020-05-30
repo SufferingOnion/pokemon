@@ -2,7 +2,12 @@
   <div>
     <div class="Pokedex">
       <template v-if="pokemones.length">
-        <pocecart v-for="pokemon in pokemones" :pokemon="pokemon" :key="pokemon.id"></pocecart>
+        
+        <pocecart 
+        v-for="pokemon in pokemones" 
+        :key="pokemon.id" 
+        :pokemon="pokemon"
+        ></pocecart>
       </template>
     </div>
     <div class="preloader">

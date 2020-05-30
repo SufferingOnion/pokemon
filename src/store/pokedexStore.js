@@ -2,6 +2,7 @@ export default {
     state: {
         IsLoaded: false,
         pokemones: [],
+        pokemon: {},
         next: '',
         baseURL: 'https://pokeapi.co/api/v2/pokemon'
     },
@@ -13,12 +14,19 @@ export default {
             state.pokemones = state.pokemones.concat(payload);
             state.IsLoaded = false;
         },
+        ADD_UNO_POKEMON: (state, payload) => {
+            state.pokemon = payload;
+            state.IsLoaded = false;
+        },
         ISLOADED: (state, payload) => {
             state.IsLoaded = payload
         },
         DESTROY: (state) => {
             state.pokemones.splice(12, state.pokemones.length)
-        }
+        },
+        DESTROY_POKEMON: (state) => {
+            state.pokemon = {}
+        },
     },
     getters: {
         pokemones(state) {
@@ -26,6 +34,9 @@ export default {
         },
         IsLoaded(state) {
             return state.IsLoaded
+        },
+        GET_UNO_POKEMON(state) {
+            return state.pokemon
         }
     },
     actions: {
@@ -50,5 +61,16 @@ export default {
                 
                 })
         },
+        get_uno_pokemon: async (context, payload) => {
+            context.commit('ISLOADED', true)
+            fetch(context.state.baseURL + "/" + payload, {
+                method: 'GET',
+                cache: 'no-cache'
+            })
+            .then(response => response.json())
+            .then(results => {
+                context.commit('ADD_UNO_POKEMON', results)
+            })
+        }
     }
 }

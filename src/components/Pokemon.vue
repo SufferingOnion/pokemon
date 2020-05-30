@@ -1,43 +1,70 @@
 <template>
   <div>
-    <template v-if="pokemon != undefined">
-      <router-link :to="{name:'Pokemon', params:{name: pokemon.name}}">
-        <div class="cart">
-          <img :src="pokemon.sprites.front_default" />
-          <span class="id">#{{ ("00"+pokemon.id).slice(-3) }}</span>
-          <h1>{{ pokemon.name[0].toUpperCase()+pokemon.name.slice(1) }}</h1>
-          <div class="types">
-            <span
-              v-for="type of pokemon.types"
-              :key="type.id"
-              :class="type.type.name"
-            >{{ type.type.name[0].toUpperCase()+type.type.name.slice(1)}}</span>
-          </div>
+    <template v-if="pokemon.name">
+      <header class="cart">
+        <h1>{{ pokemon.name }}</h1>
+        <h2 class="id">#{{ ("00"+pokemon.id).slice(-3) }}</h2>
+      </header>
+      <img :src="pokemon.sprites.front_default" />
+      <div class="characteristics">
+        <div>
+          <span>Height</span>
+          <span>{{pokemon.height}}</span>
         </div>
-      </router-link>
+        <div>
+          <span>weight</span>
+          <span>{{pokemon.weight}}</span>
+        </div>
+        <div>
+          <span></span>
+          <span></span>
+        </div>
+        <div>
+          <span>Abilities</span>
+          <span v-for="(slot, index) in pokemon.abilities" :key="index">{{ slot.ability.name }}</span>
+        </div>
+      </div>
+      <span
+        v-for="type of pokemon.types"
+        :key="type.id"
+        :class="type.type.name"
+      >{{ type.type.name}}</span>
+      <div >
+        <span>Stats</span>
+        <div class="stats">
+          <ul class="stats_stat" v-for="(id, index) in pokemon.stats" :key="index">
+            <li v-for="(stat, index) in 15" :key="index"></li>
+          </ul>
+        </div>
+      </div>
     </template>
+    <div class="preloader">
+      <img v-show="!pokemon.name" src="../assets/loading.svg" alt="preloader" />
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "pocecart",
-  props: ["pokemon"],
+  name: "CartOfPokemon",
+  props: ["name"],
   computed: {
-    IsLoaded() {
-      return this.$store.getters.IsLoaded;
+    pokemon() {
+      return this.$store.getters.GET_UNO_POKEMON;
     }
+  },
+  created() {
+    this.$store.dispatch("get_uno_pokemon", this.name);
+  },
+  beforeDestroy() {
+    this.$store.commit("DESTROY_POKEMON");
   }
 };
 </script>
 
 <style scoped lang="scss">
-a {
-  text-decoration: none;
-  color: black;
-}
-.cart>*{
-  margin-left: 10px;
+.cart > * {
+  margin-left: 0;
 }
 .cart {
   height: auto;
@@ -59,12 +86,12 @@ a {
       text-align: center;
       flex: 0 0 65%;
       padding: 4px 2em;
-      
+
       margin-right: 4px;
       border-radius: 5px;
       color: blanchedalmond;
       background: black;
-      font-family: "Flexo-Medium",arial,sans-serif;
+      font-family: "Flexo-Medium", arial, sans-serif;
       font-size: 11px;
     }
     .poison {
@@ -143,28 +170,59 @@ a {
       color: #fff;
     }
   }
-  .id{
-    font-family: "Flexo-Bold",arial,sans-serif;
+  .id {
+    font-family: "Flexo-Bold", arial, sans-serif;
     font-weight: 800;
     font-stretch: 100%;
     padding-top: 2px;
     font-size: 12.8px;
     color: #919191;
   }
-  h1{
+  h1 {
     font-size: 18px;
     font-weight: 400;
     margin: 10px 0 4px 10px;
-    font-family: "Flexo-Demi",arial,sans-serif;
+    font-family: "Flexo-Demi", arial, sans-serif;
     color: #313131;
   }
 }
-@keyframes hoverBounce {
-from {transform: matrix(1, 0, 0, 1, 0, 0);}
-50% {transform: matrix(1, 0, 0, 1, 0, -3.3);}
-to {transform: matrix(1, 0, 0, 1, 0, 0);}
+@keyframes preloader {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
-.cart:hover{
-  animation: hoverBounce  .23s ease-in-out;
+.stats{
+  width: 100%;
+  height: auto;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  &_stat{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+    align-items: center;
+    li{
+      margin-bottom: 3.5px;
+      display: block;
+      width: 100%;
+      background:crimson;
+      height: 7px;
+    }
+  }
+}
+.preloader {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding-top: 10vw;
+  padding-bottom: 10vw;
+  img {
+    width: 5vw;
+    animation: preloader 0.5s linear infinite;
+  }
 }
 </style>

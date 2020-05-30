@@ -23,7 +23,14 @@ Vue.use(VueRouter)
     name: 'Pocedex',
     
     component: () => import('../views/Pocedex.vue'),
-  }
+  },
+  {
+    path: '/Pokemon/:name',
+    name: 'Pokemon',
+    
+    component: () => import('../components/Pokemon.vue'),props: true,
+  },
+
 ]
 
 
