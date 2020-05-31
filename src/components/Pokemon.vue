@@ -32,14 +32,20 @@
       <div >
         <span>Stats</span>
         <div class="stats">
-          <ul class="stats_stat" v-for="(id, index) in pokemon.stats" :key="index">
+        <!--  <ul class="stats_stat" v-for="(id, index) in pokemon.stats" :key="index">
             <li v-for="(stat, index) in 15" :key="index"></li>
-          </ul>
+            </ul> -->
+            <div class="stats_stat" 
+            v-for="(id, index) in pokemon.stats" 
+            :key="index" 
+            style="background-image: linear-gradient(0deg, #3dc7ef 0%, #bdb9b8 100%), transition: background-image .5s ease-in-out 2s"
+            :style="StatGrad(id.base_stat)"></div>
+          
         </div>
       </div>
     </template>
     <div class="preloader">
-      <img v-show="!pokemon.name" src="../assets/loading.svg" alt="preloader" />
+      <img v-show="!pokemon.name" src="../assets/loading.svg" alt="preloader" decoding="sync"/>
     </div>
   </div>
 </template>
@@ -51,6 +57,13 @@ export default {
   computed: {
     pokemon() {
       return this.$store.getters.GET_UNO_POKEMON;
+    },
+  },
+  methods:{
+    StatGrad(stat){
+      return {
+      
+      'background-image': 'linear-gradient(0deg, #3dc7ef ' +stat+'%, #bdb9b8 ' +stat+'%)'}
     }
   },
   created() {
@@ -205,6 +218,9 @@ export default {
     flex-flow: column nowrap;
     justify-content: flex-start;
     align-items: center;
+    height: 20vw;
+    background-image: linear-gradient(0deg, #3dc7ef 0%, #bdb9b8 100%);
+    transition: all .5s ease-in-out 2s;
     li{
       margin-bottom: 3.5px;
       display: block;
