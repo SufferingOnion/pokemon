@@ -55,7 +55,9 @@ export default {
       const atBottom = scrollTop + viewportHeight === totalHeight;
 
       if (atBottom && scrollTop > 50) {
+        if(!this.IsLoaded){
         await this.dispatchPokemones();
+        }
       }
     },
     startInfiniteScroll() {
