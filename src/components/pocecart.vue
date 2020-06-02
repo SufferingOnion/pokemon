@@ -36,24 +36,30 @@ a {
   text-decoration: none;
   color: black;
 }
-.cart>*{
-  margin-left: 10px;
-}
+
 .cart {
+  position: relative;
   height: auto;
   display: flex;
   flex-flow: column nowrap;
+  border-radius: 5px;
+  overflow: hidden;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 8px 8px 15px #e0e0e0;
   img {
     width: 100%;
     height: 100%;
-    margin-left: 0;
     background-color: #f2f2f2;
+    
   }
   .types {
     display: flex;
     width: 60%;
     flex-flow: row nowrap;
     align-items: flex-start;
+    position: relative;
+    left: 10px;
+    margin-bottom: 15px;
     span {
       display: block;
       text-align: center;
@@ -144,19 +150,24 @@ a {
     }
   }
   .id{
+    position: absolute;
     font-family: "Flexo-Bold",arial,sans-serif;
     font-weight: 800;
     font-stretch: 100%;
-    padding-top: 2px;
+    top: 10px;
+    left: 10px;
+    
     font-size: 12.8px;
     color: #919191;
   }
   h1{
+    position: relative;
+    left: 10px;
     font-size: 18px;
     font-weight: 400;
-    margin: 10px 0 4px 10px;
     font-family: "Flexo-Demi",arial,sans-serif;
     color: #313131;
+    margin: 15px 0;
   }
 }
 @keyframes hoverBounce {

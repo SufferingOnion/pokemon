@@ -5,6 +5,7 @@
         <h1>{{ pokemon.name }}</h1>
         <h2 class="id">#{{ ("00"+pokemon.id).slice(-3) }}</h2>
       </header>
+
       <div class="wrapper_pokemon">
         <img :src="pokemon.sprites.front_default" />
         <div class="characteristics">
@@ -25,13 +26,9 @@
             <span v-for="(slot, index) in pokemon.abilities" :key="index">{{ slot.ability.name }}</span>
           </div>
         </div>
-        <span
-          v-for="type of pokemon.types"
-          :key="type.id"
-          :class="type.type.name"
-        >{{ type.type.name}}</span>
-        <span>Stats</span>
-        <div class="stats" v-observe="StatIsVisible">
+
+        <div class="stats_wrapper" v-observe="StatIsVisible">
+          <span>Stats</span>
           <transition-group tag="div" v-on:enter="statAnimate">
             <div
               v-show="Visible"
@@ -43,6 +40,14 @@
               <div></div>
             </div>
           </transition-group>
+        </div>
+
+        <div class="types">
+          <span
+            v-for="type of pokemon.types"
+            :key="type.id"
+            :class="type.type.name"
+          >{{ type.type.name}}</span>
         </div>
       </div>
     </template>
@@ -59,7 +64,7 @@ export default {
   props: ["name"],
   data() {
     return {
-      Visible: true
+      Visible: false
     };
   },
   computed: {
@@ -218,14 +223,36 @@ export default {
   width: 100%;
   padding: 0 10%;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  img{
+  justify-items: stretch;
+
+  @media (min-width: 721px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 721) {
+    grid-template-columns: 1fr;
+  }
+  img {
     width: 30vw;
+    background-color: #f2f2f2;
   }
 }
-.stats > div {
-  margin-top: 800px;
-  width: 100%;
+.characteristics {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  grid-auto-flow: column;
+  div {
+    padding: 20% 0;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: space-between;
+    div > span {
+      display: block;
+    }
+  }
+}
+.stats_wrapper > div {
   height: auto;
   display: grid;
   grid-template-columns: repeat(6, 1fr);
