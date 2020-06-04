@@ -11,7 +11,7 @@ export default {
             state.next = payload;
         },
         ADD_POKEMONES: (state, payload) => {
-            state.pokemones = state.pokemones.concat(payload);
+            Array.prototype.push.apply(state.pokemones, payload);
             state.IsLoaded = false;
         },
         ADD_UNO_POKEMON: (state, payload) => {
@@ -22,7 +22,7 @@ export default {
             state.IsLoaded = payload
         },
         DESTROY: (state) => {
-            state.pokemones.splice(12, state.pokemones.length)
+            state.pokemones.length = 0;
         },
         DESTROY_POKEMON: (state) => {
             state.pokemon = {}
