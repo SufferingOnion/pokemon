@@ -4,5 +4,5 @@ module.exports = {
     : '/'
     ,
   runtimeCompiler: true,
-  outputDir: 'docs'
+  outputDir: 'docs',
 }

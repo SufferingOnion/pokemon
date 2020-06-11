@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import { ObserveVisibility } from 'vue-observe-visibility'
 import velocity from 'velocity-animate'
+
 Vue.prototype.$velocity = velocity
 
 Vue.directive('observe', ObserveVisibility)

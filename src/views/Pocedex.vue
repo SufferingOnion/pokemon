@@ -91,27 +91,7 @@ export default {
     transform: rotate(360deg);
   }
 }
-.preloader {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
-  padding-top: 10vw;
-  padding-bottom: 10vw;
-  button {
-    cursor: pointer;
-    border: 0;
-    border-radius: 4px;
-    background-color: #30a7d7;
-    color: #fff;
-    padding: 5px 20px;
-    font-family: "Roboto", sans-serif;
-    font-weight: bold;
-  }
-  img {
-    width: 5vw;
-    animation: preloader 0.5s linear infinite;
-  }
-}
+
 .types {
   display: flex;
   width: 60%;
@@ -209,10 +189,7 @@ export default {
     color: #fff;
   }
 }
-a {
-  text-decoration: none;
-  color: black;
-}
+
 img {
   image-rendering: pixelated;
 }

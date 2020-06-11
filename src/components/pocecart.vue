@@ -40,7 +40,7 @@ export default {
   border-radius: 5px;
   overflow: hidden;
   background-color: rgb(255, 255, 255);
-  box-shadow: 8px 8px 15px #e0e0e0;
+  box-shadow: 0px 12px 27px rgba(24, 25, 28, 0.08);
   img {
     width: 100%;
     height: 100%;
