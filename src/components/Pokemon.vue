@@ -44,16 +44,18 @@
             </div>
             <div>
               <span>Category</span>
-              <span>{{ pokemon.species.genera[pokemon.species.genera.length - 1].genus }}</span>
+              <span>{{ pokemon.species.genera[pokemon.species.genera.length - 1].genus.slice(0, pokemon.species.genera[pokemon.species.genera.length - 1].genus.indexOf("Pokémon")) }}</span>
             </div>
-            <div>
+            <div class="abilities">
               <span>Abilities</span>
               <span v-for="(slot, index) in pokemon.abilities" :key="index">{{ slot.ability.name }}</span>
             </div>
             <div class="gender">
               <span>Gender</span>
-              <img src="../assets/icons/male.svg" alt="male" />
-              <img src="../assets/icons/female.svg" alt="female" />
+              <div>
+                <img src="../assets/icons/male.svg" alt="male" />
+                <img src="../assets/icons/female.svg" alt="female" />
+              </div>
             </div>
           </div>
           <h2>Type</h2>
@@ -66,12 +68,9 @@
           </div>
           <h2>Weaknesses</h2>
           <div class="types">
-            <span
-              v-for="(type, index) of pokemon.damage_rel"
-              :key="index"
-              :class="type.name"
-            >{{ type.name}}
-            <span v-if="type.multiple == 4">x4</span>
+            <span v-for="(type, index) of pokemon.damage_rel" :key="index" :class="type.name">
+              {{ type.name}}
+              <span v-if="type.multiple == 4">x4</span>
             </span>
           </div>
         </div>
@@ -131,6 +130,12 @@ export default {
 .Container {
   max-width: 1400px;
   margin: 0 auto;
+  @media (max-width: 1500px) {
+    padding: 0 7%;
+  }
+  @media (max-width: 320px) {
+    padding: 0 2%;
+  }
 }
 *:first-letter {
   text-transform: capitalize;
@@ -140,6 +145,9 @@ export default {
   font-style: normal;
   font-weight: normal;
   white-space: nowrap;
+  @media (max-width: 425) {
+    white-space: wrap;
+  }
 }
 .Pokemon {
   width: 100%;
@@ -149,6 +157,9 @@ export default {
   grid-template-rows: min-content;
   grid-auto-rows: min-content;
   gap: 20px;
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
+  }
   > * {
     background: #ffffff;
     box-shadow: 0px 12px 27px rgba(24, 25, 28, 0.08);
@@ -169,6 +180,10 @@ export default {
     grid-column: 2;
     padding: 80px;
     padding-right: 170px;
+    @media (max-width: 1024px) {
+      grid-column: 1;
+      padding: 5%;
+    }
     > * {
       margin: 25px 0;
     }
@@ -182,8 +197,8 @@ export default {
     }
     .types {
       display: flex;
-      width: 60%;
-      flex-flow: row nowrap;
+      width: 100%;
+      flex-flow: row wrap;
       align-items: flex-start;
       justify-content: flex-start;
       position: relative;
@@ -195,13 +210,13 @@ export default {
         text-align: center;
         flex: 0 0 12em;
         padding: 4px 2em;
-        margin-right: 4px;
+        margin: 4px 4px 4px 0;
         border-radius: 5px;
         color: blanchedalmond;
         background: black;
         font-family: "Flexo-Medium", arial, sans-serif;
         font-size: 11px;
-        span{
+        span {
           padding: 4px 4px;
           border-radius: 50%;
           position: absolute;
@@ -317,8 +332,9 @@ export default {
     }
     .characteristics {
       display: grid;
-      grid-template-columns: 1fr;
+      grid-template-columns: auto;
       grid-auto-rows: 46px;
+      gap: 10px;
 
       div {
         display: flex;
@@ -343,9 +359,37 @@ export default {
         }
       }
       .gender {
-        img {
-          width: 1em;
-          background: transparent;
+        div {
+          display: flex;
+          flex-flow: row nowrap;
+          img {
+            width: 1em;
+            background: transparent;
+          }
+        }
+      }
+      @media (max-width: 425px) {
+        grid-template-columns: auto auto;
+        grid-auto-rows: min-content;
+        .abilities {
+          grid-column: 1;
+          grid-row: 2;
+        }
+        div {
+          flex-flow: column wrap;
+          border-bottom: 0;
+          span:first-child {
+            display: block;
+            width: auto;
+            margin-bottom: 10px;
+          }
+          *:nth-child(n + 2) {
+            margin-right: 0;
+            font-size: 22px;
+            line-height: 26px;
+            margin-bottom: 5px;
+            color: #25272e;
+          }
         }
       }
     }
@@ -356,6 +400,11 @@ export default {
     height: min-content;
     padding: 40px;
     width: auto;
+    @media (max-width: 1024px) {
+      grid-column: 1;
+      grid-row: 1;
+      position: static;
+    }
 
     img {
       width: 100%;
