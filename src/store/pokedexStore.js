@@ -16,6 +16,8 @@ export default {
         },
         ADD_UNO_POKEMON: (state, payload) => {
             state.pokemon = payload;
+            state.pokemon.damage_rel = [];
+            state.pokemon.evo_chain = [];
 
         },
         ADD_UNO_INFO_SPECIES: (state, payload) => {
@@ -49,7 +51,7 @@ export default {
                 }));
             });
 
-            state.pokemon.damage_rel = [];
+
 
             if (payload.length == 2) {
                 state.pokemon.types[0].types_relations.damage_from.forEach(function (typeRel1) {
@@ -76,16 +78,20 @@ export default {
                 Array.prototype.push.apply(state.pokemon.damage_rel, state.pokemon.types[1].types_relations.damage_from.filter(type => {
                     return (
                         (type.multiple == 2) && (state.pokemon.damage_rel.find(function (item) {
-                           return (type.name == item.name)
+                            return (type.name == item.name)
                         }, type) == undefined)
-                    ); 
-                    
+                    );
+
                 }))
             } else {
                 Array.prototype.push.apply(state.pokemon.damage_rel, state.pokemon.types[0].types_relations.damage_from.filter(type => {
                     return (type.multiple == 2)
                 }))
             }
+
+        },
+        ADD_UNO_INFO_EVOCHAINE: (state, payload) => {
+            Array.prototype.push.apply(state.pokemon.evo_chain, payload);
             state.IsLoaded = false;
         },
         ISLOADED: (state, payload) => {
@@ -112,10 +118,9 @@ export default {
     actions: {
         get_pokemones: async (context, payload) => {
             context.commit('ISLOADED', true)
-            console.log(context.state.baseURL + payload)
             fetch(context.state.baseURL + payload, {
                 method: 'GET',
-            
+
             })
                 .then(response => response.json())
 
@@ -137,7 +142,7 @@ export default {
             context.commit('ISLOADED', true)
             fetch(payload, {
                 method: 'GET',
-            
+
             })
                 .then(response => response.json())
                 .then(results => {
@@ -147,11 +152,57 @@ export default {
                 .then(results => {
                     fetch(results.species.url, {
                         method: 'GET',
-                    
+
                     })
                         .then(response => response.json())
                         .then(results => {
                             context.commit('ADD_UNO_INFO_SPECIES', results);
+                            return results;
+                        })
+                        .then(results => {
+                            fetch(results.evolution_chain.url, {
+                                method: 'GET',
+
+                            })
+                                .then(response => response.json())
+                                .then(results => {
+                                    console.log(results)
+                                    let chains = [];
+                                    let Flatchain = function (chain) {
+                                        chains.push(Object.values(chain.species).slice(0, 1));
+                                        if (chain.evolves_to.length == 1) {
+
+                                            Flatchain(chain.evolves_to[0])
+                                        } else {
+                                            if (chain.evolves_to.length > 1) {
+                                                chains.push(chain.evolves_to.map(function (item) {
+                                                    return item.species.name
+                                                }))
+                                                if (chain.evolves_to[0].evolves_to.length != 0) {
+                                                    chains.push(chain.evolves_to.map(function (item) {
+                                                        return item.evolves_to[0].species.name
+                                                    }))
+                                                }
+                                            }
+                                        }
+                                    }
+                                    console.log(chains);
+                                    Flatchain(results.chain);
+
+                                    return chains;
+                                })
+                                .then(chains => {
+                                    Promise.all(chains.map(function (item) {
+                                        
+                                        return Promise.all(item.map( function (link) {
+                                            return fetch('https://pokeapi.co/api/v2/pokemon/' + link + '/', { method: 'GET', })
+                                        }))
+                                            .then(responses => Promise.all(responses.map(r => r.json())))
+                                            
+                                    }))
+                                        
+                                        .then(results => context.commit('ADD_UNO_INFO_EVOCHAINE', results))
+                                })
                         })
                     return results;
                 })
@@ -162,6 +213,7 @@ export default {
                         .then(responses => Promise.all(responses.map(r => r.json())))
                         .then(results => context.commit('ADD_UNO_INFO_TYPES', results))
                 })
+
         }
     }
 }

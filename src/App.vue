@@ -46,6 +46,18 @@ body,html{
 *{
   box-sizing: border-box;
 }
+a {
+  text-decoration: none;
+  color: black;
+}
+@keyframes Preloader {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 .preloader {
   display: flex;
   flex-flow: column nowrap;
@@ -67,11 +79,6 @@ body,html{
     animation: preloader 0.5s linear infinite;
   }
 }
-a {
-  text-decoration: none;
-  color: black;
-}
-
 </style>
 
 <script>

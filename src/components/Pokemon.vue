@@ -14,7 +14,7 @@
                 v-bind:data-index="index"
               >
                 <span>
-                  <span>{{ pokemon.stats[index].stat.name }}</span>
+                  <span :class="pokemon.stats[index].stat.name">{{ pokemon.stats[index].stat.name }}</span>
                   <span>{{ pokemon.stats[index].base_stat }}</span>
                 </span>
                 <div class="stats_stat">
@@ -24,10 +24,12 @@
             </transition-group>
           </div>
         </div>
-        <div class="Pokemon_wrapper">
+        <div class="Pokemon-Information">
           <header class="cart">
-            <span class="name">{{ pokemon.name }}</span>
-            <span class="id">#{{ ("00"+pokemon.id).slice(-3) }}</span>
+            <h1 class="name">
+              {{ pokemon.name }}
+              <span class="id">#{{ ("00"+pokemon.id).slice(-3) }}</span>
+            </h1>
           </header>
           <p
             class="flavor_text"
@@ -52,10 +54,10 @@
             </div>
             <div class="gender">
               <span>Gender</span>
-              <div>
+              <span>
                 <img src="../assets/icons/male.svg" alt="male" />
                 <img src="../assets/icons/female.svg" alt="female" />
-              </div>
+              </span>
             </div>
           </div>
           <h2>Type</h2>
@@ -74,18 +76,50 @@
             </span>
           </div>
         </div>
+        <div class="Pokemon-Evolution">
+          <h1>Evolution stages</h1>
+          <div class="Pokemon-Evolution_wrapper">
+            <div
+              v-if="pokemon.evo_chain.length >1"
+              :style="ArrowStyle1"
+              class="evolution-chain-arrow"
+            >
+              <div v-for="item in ArrowAmount1" :key="item"></div>
+            </div>
+            <div
+              v-if="pokemon.evo_chain.length >2"
+              :style="ArrowStyle2"
+              class="evolution-chain-arrow"
+            >
+              <div v-for="item in ArrowAmount2" :key="item"></div>
+            </div>
+            <evolution-chain
+              class="evolution-chain"
+              v-for="(item, index) in pokemon.evo_chain"
+              :key="index"
+              :evo_item="item"
+              :name="name"
+              :data-set="index"
+              :style="{order: index}"
+            ></evolution-chain>
+          </div>
+        </div>
       </div>
     </template>
 
     <div class="preloader">
-      <img v-show="!pokemon.name" src="../assets/loading.svg" alt="preloader" decoding="sync" />
+      <img v-show="IsLoaded" src="../assets/loading.svg" alt="preloader" decoding="sync" />
     </div>
   </div>
 </template>
 
 <script>
+import evolution_chain from "./Evolution_chain.vue";
 export default {
   name: "CartOfPokemon",
+  components: {
+    "evolution-chain": evolution_chain
+  },
   props: ["name"],
   data() {
     return {
@@ -99,6 +133,42 @@ export default {
     },
     IsLoaded() {
       return this.$store.getters.IsLoaded;
+    },
+    ArrowAmount1() {
+      if (this.pokemon.evo_chain[1].length == 2) {
+        return 2;
+      } else {
+        return 1;
+      }
+    },
+    ArrowAmount2() {
+      if (this.pokemon.evo_chain[2].length == 2) {
+        return 2;
+      } else {
+        return 1;
+      }
+    },
+    ArrowStyle1() {
+      if (this.pokemon.evo_chain[1].length == 2) {
+        return {
+          padding: "15% 0"
+        };
+      } else {
+        return {
+          "justify-content": "center"
+        };
+      }
+    },
+    ArrowStyle2() {
+      if (this.pokemon.evo_chain[2].length == 2) {
+        return {
+          padding: "15% 0"
+        };
+      } else {
+        return {
+          "justify-content": "center"
+        };
+      }
     }
   },
   methods: {
@@ -149,6 +219,14 @@ export default {
     white-space: wrap;
   }
 }
+h1 {
+  margin: 0;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 38px;
+  line-height: 45px;
+  color: #25272e;
+}
 .Pokemon {
   width: 100%;
   height: auto;
@@ -157,29 +235,21 @@ export default {
   grid-template-rows: min-content;
   grid-auto-rows: min-content;
   gap: 20px;
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
   > * {
     background: #ffffff;
     box-shadow: 0px 12px 27px rgba(24, 25, 28, 0.08);
     border-radius: 10px;
   }
-
-  @keyframes preloader {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr;
   }
-  &_wrapper {
+
+  &-Information {
     height: auto;
     width: 100%;
     grid-column: 2;
     padding: 80px;
-    padding-right: 170px;
+    padding-right: 8.8vw;
     @media (max-width: 1024px) {
       grid-column: 1;
       padding: 5%;
@@ -304,15 +374,10 @@ export default {
       margin-top: 0;
       width: 100%;
       height: auto;
-      display: flex;
-      flex-flow: row wrap;
-      justify-content: flex-start;
-      align-items: center;
+      display: block;
       border-radius: 0;
       overflow: visible;
       box-shadow: 0;
-      font-size: 38px;
-      line-height: 45px;
       .id {
         position: static;
         top: 0;
@@ -359,7 +424,7 @@ export default {
         }
       }
       .gender {
-        div {
+        span {
           display: flex;
           flex-flow: row nowrap;
           img {
@@ -390,6 +455,53 @@ export default {
             margin-bottom: 5px;
             color: #25272e;
           }
+        }
+      }
+    }
+  }
+  &-Evolution {
+    height: auto;
+    width: 100%;
+    padding: 0 50px 80px 50px;
+    grid-column: 2;
+    grid-row: 2;
+    > h1 {
+      margin: 80px 0 40px 0;
+    }
+    @media (max-width: 1024px) {
+      grid-column: 1;
+      grid-row: 3;
+      padding: 5%;
+      padding-top: 0;
+    }
+    .Pokemon-Evolution_wrapper {
+      width: 100%;
+      height: auto;
+      position: relative;
+      display: flex;
+      flex-flow: row nowrap;
+      align-items: stretch;
+      justify-content: center;
+      .evolution-chain {
+        &-arrow {
+          width: 10%;
+          display: flex;
+          flex-flow: column nowrap;
+          justify-content: space-between;
+          align-content: center;
+          > div {
+            display: block;
+            width: 42px;
+            height: 42px;
+            background: url("../assets/icons/evo_arrow.svg") no-repeat;
+            background-size: cover;
+          }
+        }
+        &-arrow:first-child {
+          order: 1;
+        }
+        &-arrow:nth-child(2) {
+          order: 2;
         }
       }
     }
@@ -434,6 +546,9 @@ export default {
           }
           span:last-child {
             opacity: 1;
+          }
+          .hp {
+            text-transform: uppercase;
           }
         }
 
