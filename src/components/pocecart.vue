@@ -1,9 +1,13 @@
-<template>
+<template v-show="cartLoaded">
   <div>
-    <template v-if="pokemon != undefined">
-      <router-link :to="{name:'Pokemon', params:{name: pokemon.name}}">
+
+      <router-link  :to="{name:'Pokemon', params:{name: pokemon.name}}">
         <div class="cart">
-          <img :src="pokemon.sprites.front_default" />
+          <img
+            :src="pokemon.sprites.front_default"
+            decoding="sync"
+            v-on:load="cartLoaded=!cartLoaded"
+          />
           <span class="id">#{{ ("00"+pokemon.id).slice(-3) }}</span>
           <h1>{{ pokemon.name[0].toUpperCase()+pokemon.name.slice(1) }}</h1>
           <div class="types">
@@ -15,7 +19,7 @@
           </div>
         </div>
       </router-link>
-    </template>
+    
   </div>
 </template>
 
@@ -23,16 +27,25 @@
 export default {
   name: "pocecart",
   props: ["pokemon"],
+  data() {
+    return {
+      cartLoaded: false
+    };
+  },
   computed: {
     IsLoaded() {
       return this.$store.getters.IsLoaded;
     }
+  },
+  methods: {
+
   }
 };
 </script>
 
 <style scoped lang="scss">
 .cart {
+  
   position: relative;
   height: auto;
   display: flex;
@@ -158,10 +171,6 @@ export default {
     color: #fff;
   }
 }
-img {
-  image-rendering: pixelated;
-}
-
 .id {
   position: absolute;
   font-family: "Flexo-Bold", arial, sans-serif;

@@ -19,8 +19,8 @@ const routes = [
     component: () => import('../views/SomeContent.vue')
   },
   {
-    path: '/Pocedex',
-    name: 'Pocedex',
+    path: '/Pokedex',
+    name: 'Pokedex',
 
     component: () => import('../views/Pocedex.vue'),
   },

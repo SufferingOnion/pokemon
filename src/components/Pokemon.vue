@@ -155,7 +155,8 @@ export default {
         };
       } else {
         return {
-          "justify-content": "center"
+          "align-items": "center",
+          padding: "20% 0"
         };
       }
     },
@@ -166,7 +167,8 @@ export default {
         };
       } else {
         return {
-          "justify-content": "center"
+          "align-items": "center",
+          padding: "20% 0"
         };
       }
     }
@@ -207,7 +209,7 @@ export default {
     padding: 0 2%;
   }
 }
-*:first-letter {
+span,h1,h2 {
   text-transform: capitalize;
 }
 * {
@@ -534,10 +536,13 @@ h1 {
       flex-flow: column;
       overflow: hidden;
       .stats_wrapper-stat {
-        margin: 5px 0;
+        margin: 8px 0;
         height: auto;
         span {
+          display: flex;
+          margin: 8px 0;
           span:first-child {
+            margin: 0;
             font-size: 18px;
             line-height: 18px;
             color: #25272e;
@@ -545,6 +550,7 @@ h1 {
             margin-right: 10px;
           }
           span:last-child {
+            margin: 0;
             opacity: 1;
           }
           .hp {
@@ -557,14 +563,16 @@ h1 {
           left: 0;
           width: 100%;
           height: 8px;
-          background: #bdb9b8;
+          background: rgba(47, 128, 237, 0.2);
+          border-radius: 20px;
         }
         .stats_stat > div {
           position: relative;
           left: -100%;
           width: 100%;
           height: 8px;
-          background: #0099ff;
+          background: rgba(47, 128, 237, 1);
+          border-radius: 20px;
         }
       }
     }

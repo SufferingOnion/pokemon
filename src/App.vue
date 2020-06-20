@@ -9,7 +9,7 @@
           <router-link to="/SomeContent">Some Content</router-link>
         </div>
         <div>
-          <router-link to="/Pocedex">Pokedex</router-link>
+          <router-link to="/Pokedex">Pokedex</router-link>
         </div>
 
     </nav>
@@ -23,6 +23,8 @@
   font-family: 'Roboto', sans-serif;
 }
 body,html{
+  width: 100%;
+
   padding: 0;
   margin: 0;
   border: 0;
@@ -30,7 +32,7 @@ body,html{
   background-color: #E5E5E5;
 }
 #app{
-  width: 100vw;
+  width: 100%;
   height: auto;
   nav{
     padding: .5em;
@@ -50,13 +52,16 @@ a {
   text-decoration: none;
   color: black;
 }
-@keyframes Preloader {
+@keyframes preloader {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
+}
+img {
+  image-rendering: pixelated;
 }
 .preloader {
   display: flex;
