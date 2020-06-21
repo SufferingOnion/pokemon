@@ -9,7 +9,7 @@
           <span class="id">#{{ ("00"+evo_form.id).slice(-3) }}</span>
         </span>
       </div>
-      <div class="types" :style="TypeStyle">
+      <div class="types">
         <span
           v-for="type of evo_form.types"
           :key="type.id"
@@ -30,7 +30,8 @@ export default {
     EEVEE() {
       if (this.evo_item.length >= 3) {
         return {
-          width: "min-content",
+          height: "auto",
+          width: "90%",
           flex: "3 0 75%",
           "flex-flow": "row wrap"
         };
@@ -38,24 +39,13 @@ export default {
         return {};
       }
     },
-    TypeStyle() {
-      if (this.evo_item[0].types.length == 2) {
-        return {
-          "justify-content": "space-between"
-        };
-      } else {
-        return {
-          "justify-content": "center"
-        };
-      }
-    }
   },
   methods: {
-    imgStyle: function(name){
+    imgStyle: function(name) {
       if (name == this.name) {
-        return "evo-circle"
+        return "evo-circle";
       } else {
-        return {}
+        return {};
       }
     }
   }
@@ -71,17 +61,29 @@ export default {
   justify-content: center;
   align-items: stretch;
   width: 23%;
+  @media (max-width: 1024px) {
+    width: 100%;
+    flex-flow: row nowrap;
+    align-items: stretch;
+    justify-content: stretch;
+  }
+  @media (max-width: 425px) {
+    width: 100%;
+  }
   .evo {
     margin: 0 20px 20px 0;
     display: flex;
     flex-flow: column nowrap;
     justify-content: start;
     align-items: center;
+    @media (max-width: 1024px) {
+      width: 100%;
+    }
     img {
       width: 69.85%;
     }
     &-circle {
-      border: 5px solid #2F80ED;
+      border: 5px solid #2f80ed;
       border-radius: 50%;
     }
 
@@ -109,7 +111,7 @@ export default {
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-between;
+  justify-content: center;
   span {
     position: relative;
     display: block;

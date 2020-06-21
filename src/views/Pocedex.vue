@@ -1,15 +1,30 @@
 <template>
   <div>
     <div class="Pokedex">
-      <transition-group name="list" tag="div" mode="out-in">
-        <pocecart v-for="pokemon in pokemones" :key="pokemon.id" :pokemon="pokemon"></pocecart>
+      <transition-group
+        name="list"
+        tag="div"
+        appear
+        :css="false"
+        v-on:before-enter="beforeEnter"
+        v-on:enter="Enter"
+      >
+        <pocecart
+          v-for="pokemon in pokemones"
+          :key="pokemon.id"
+          :pokemon="pokemon"
+          :data-index="pokemon.id"
+        ></pocecart>
       </transition-group>
     </div>
-    <div v-observe="scrollHandler" class="preloader">
-      <button
-        v-if="isonScrolling&&pokemones.length"
-        v-on:click="startInfiniteScroll"
-      >БОЛЬШЕ ПОКЕМОНОВ!!!</button>
+    <div
+      v-observe="(isonScrolling&&!IsLoaded) ? {
+        callback: preloaderVisible,
+        throttle: 500
+      } : false"
+      class="preloader"
+    >
+      <button v-if="!isonScrolling&&!IsLoaded" v-on:click="startInfiniteScroll">БОЛЬШЕ ПОКЕМОНОВ!!!</button>
       <img v-show="IsLoaded" src="../assets/loading.svg" alt="preloader" />
     </div>
   </div>
@@ -23,7 +38,8 @@ export default {
   name: "Pokedex",
   data() {
     return {
-      offsetURL: 8,
+      offsetURL: 12,
+      offsetAnimation: 1,
       isonScrolling: false
     };
   },
@@ -40,23 +56,50 @@ export default {
   },
   methods: {
     offsetCounter() {
-      return "?offset=" + String(this.offsetURL) + "&limit=8";
+      return "?offset=" + String(this.offsetURL) + "&limit=12";
     },
     async dispatchPokemones() {
       await this.$store.dispatch("get_pokemones", this.offsetCounter());
       this.offsetURL < 788
-        ? (this.offsetURL = this.offsetURL + 8)
+        ? (this.offsetURL = this.offsetURL + 12)
         : (this.offsetURL = 788);
     },
-    scrollHandler() {
-      if (!this.IsLoaded) {
+    preloaderVisible(isVisible) {
+      if (isVisible) {
         this.dispatchPokemones();
       }
+    },
+    startInfiniteScroll() {
+      this.isonScrolling = true;
+    },
+    beforeEnter(el) {
+
+      this.$velocity(el, { opacity: 0, position: "relative", bottom: "75px"});
+
+
+    },
+    Enter(el, done) {
+      var vm = this;
+      var delay = this.animationOffset() * 150;
+      setTimeout(function() {
+        vm.$velocity(el, { opacity: 1, bottom: "0" },{duration: 1000}, { complete: done });
+      }, delay);
+      
+    },
+    animationOffset() {
+      if (this.offsetAnimation <= 12) {
+        return (this.offsetAnimation++);
+      } else {
+        this.offsetAnimation = 1;
+        return this.offsetAnimation++;
+        
+      }
+      
     }
   },
   created() {
     if (this.$store.getters.pokemones.length == 0) {
-      this.$store.dispatch("get_pokemones", "?offset=0&limit=8");
+      this.$store.dispatch("get_pokemones", "?offset=0&limit=12");
     }
   },
   beforeDestroy() {
@@ -119,7 +162,7 @@ export default {
 }
 .list-enter-active {
   position: relative;
-  transition: all .5s ease-in-out;
+  transition: all 0.5s ease-in-out;
 }
 .list-enter {
   &:nth-child(4n) {

@@ -134,6 +134,14 @@ export default {
                         return fetch(pokemon.url, { method: 'GET', })
                     }))
                         .then(responses => Promise.all(responses.map(r => r.json())))
+                        .then(results => {
+                            Promise.all(results.map(function(item){
+                                item.img = new Image();
+                                item.img.src = item.sprites.front_default
+                            }))
+                            
+                            return results
+                        })
                         .then(results => context.commit('ADD_POKEMONES', results))
 
                 })

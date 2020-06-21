@@ -1,13 +1,12 @@
-<template v-show="cartLoaded">
-  <div>
-
-      <router-link  :to="{name:'Pokemon', params:{name: pokemon.name}}">
-        <div class="cart">
-          <img
-            :src="pokemon.sprites.front_default"
-            decoding="sync"
-            v-on:load="cartLoaded=!cartLoaded"
-          />
+<template >
+  <div class="pokecart">
+    <router-link :to="{name:'Pokemon', params:{name: pokemon.name}}">
+      <div class="cart">
+        <div class="img">
+          
+          <img ref="img" @load="Enter" :src="pokemon.sprites.front_default" />
+        </div>
+        <div class="cart_info">
           <span class="id">#{{ ("00"+pokemon.id).slice(-3) }}</span>
           <h1>{{ pokemon.name[0].toUpperCase()+pokemon.name.slice(1) }}</h1>
           <div class="types">
@@ -18,8 +17,8 @@
             >{{ type.type.name[0].toUpperCase()+type.type.name.slice(1)}}</span>
           </div>
         </div>
-      </router-link>
-    
+      </div>
+    </router-link>
   </div>
 </template>
 
@@ -29,7 +28,7 @@ export default {
   props: ["pokemon"],
   data() {
     return {
-      cartLoaded: false
+      cartLoaded: false,
     };
   },
   computed: {
@@ -38,26 +37,43 @@ export default {
     }
   },
   methods: {
-
+    Enter(){
+      this.$velocity(this.$refs.img, { opacity: 1});
+    },
   }
 };
 </script>
 
 <style scoped lang="scss">
+.pokecart {
+  opacity: 0;
+}
 .cart {
-  
   position: relative;
-  height: auto;
+  height: 100%;
   display: flex;
+  justify-content: flex-end;
   flex-flow: column nowrap;
   border-radius: 5px;
   overflow: hidden;
-  background-color: rgb(255, 255, 255);
+  background-color: #f2f2f2;
   box-shadow: 0px 12px 27px rgba(24, 25, 28, 0.08);
-  img {
-    width: 100%;
-    height: 100%;
-    background-color: #f2f2f2;
+  .img { /* this circle for more comfortable UX */
+    padding: 50%;
+    background-color: transparent;
+    border-radius: 50%;
+    img {
+      left:0;
+      top: 0;
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      transition: opacity .5s ease;
+    }
+  }
+
+  .cart_info {
+    background: #ffffff;
   }
 }
 @keyframes hoverBounce {

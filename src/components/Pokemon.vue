@@ -174,9 +174,8 @@ export default {
     }
   },
   methods: {
-    StatIsVisible(isVisible, entry) {
+    StatIsVisible(isVisible) {
       this.Visible = isVisible;
-      console.log(this.Visible, entry.target);
     },
     statAnimate(el) {
       this.$velocity(
@@ -209,7 +208,9 @@ export default {
     padding: 0 2%;
   }
 }
-span,h1,h2 {
+span,
+h1,
+h2 {
   text-transform: capitalize;
 }
 * {
@@ -484,6 +485,12 @@ h1 {
       flex-flow: row nowrap;
       align-items: stretch;
       justify-content: center;
+
+      @media (max-width: 1024px) {
+        height: auto;
+        flex-flow: row wrap;
+        align-items: stretch;
+      }
       .evolution-chain {
         &-arrow {
           width: 10%;
@@ -491,12 +498,50 @@ h1 {
           flex-flow: column nowrap;
           justify-content: space-between;
           align-content: center;
+          @media (max-width: 1024px) {
+            
+            transform: rotate(90deg);
+            height: 80vw;
+            width: min-content;
+            flex-flow: row-reverse wrap;
+            align-content: stretch;
+          }
+          @media (max-width: 425px) {
+            box-sizing: content-box;
+            transform: rotate(90deg);
+            height: 60vw;
+            width: min-content;
+            flex-flow: row-reverse wrap;
+            align-content: stretch;
+          }
+          @media (max-width: 320px) {
+            box-sizing: content-box;
+            transform: rotate(90deg);
+            height: 80vw;
+            width: min-content;
+            flex-flow: row-reverse wrap;
+            align-content: stretch;
+          }
           > div {
             display: block;
             width: 42px;
             height: 42px;
             background: url("../assets/icons/evo_arrow.svg") no-repeat;
             background-size: cover;
+            @media (max-width: 1024px) {
+              
+              width: 100px;
+              height: 100px;
+            }
+            @media (max-width: 425px) {
+              width: 70px;
+              height: 70px;
+            }
+            &:nth-child(2) {
+              @media (max-width: 1024px) {
+                margin-top: auto;
+              }
+            }
           }
         }
         &-arrow:first-child {
@@ -559,6 +604,7 @@ h1 {
         }
 
         .stats_stat {
+          overflow: hidden;
           position: relative;
           left: 0;
           width: 100%;
