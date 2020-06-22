@@ -126,10 +126,11 @@ export default {
 
                 .then(data => {
                     context.commit('NEXT', data.next);
+                    console.log(data.results)
                     return data;
                 })
                 .then(data => {
-
+                    console.log(data.results)
                     Promise.all(data.results.map(function (pokemon) {
                         return fetch(pokemon.url, { method: 'GET', })
                     }))

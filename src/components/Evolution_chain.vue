@@ -1,6 +1,13 @@
 <template>
   <div class="wrapper" :style="EEVEE">
-    <div class="evo" v-for="(evo_form, index) in evo_item" :key="index" :data-set="index">
+    <router-link
+      :to="{name:'Pokemon', params:{name: evo_form.name}}"
+      target="_blank"
+      v-for="(evo_form, index) in evo_item"
+      :key="index"
+      :data-set="index"
+      class="evo"
+    >
       <img :src="evo_form.sprites.front_default" class="evo-img" :class="imgStyle(evo_form.name)" />
 
       <div class="cart">
@@ -16,7 +23,7 @@
           :class="type.type.name"
         >{{ type.type.name}}</span>
       </div>
-    </div>
+    </router-link>
   </div>
 </template>
 <script>
@@ -38,7 +45,7 @@ export default {
       } else {
         return {};
       }
-    },
+    }
   },
   methods: {
     imgStyle: function(name) {

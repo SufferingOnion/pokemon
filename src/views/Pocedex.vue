@@ -11,7 +11,7 @@
       >
         <pocecart
           v-for="pokemon in pokemones"
-          :key="pokemon.id"
+          :key="pokemon.name"
           :pokemon="pokemon"
           :data-index="pokemon.id"
         ></pocecart>
