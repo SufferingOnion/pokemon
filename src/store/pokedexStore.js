@@ -1,6 +1,6 @@
 export default {
     state: {
-        IsLoaded: false,
+        IsLoad: false,
         pokemones: [],
         pokemon: {},
         next: '',
@@ -12,7 +12,7 @@ export default {
         },
         ADD_POKEMONES: (state, payload) => {
             Array.prototype.push.apply(state.pokemones, payload);
-            state.IsLoaded = false;
+            state.IsLoad = false;
         },
         ADD_UNO_POKEMON: (state, payload) => {
             state.pokemon = payload;
@@ -92,10 +92,10 @@ export default {
         },
         ADD_UNO_INFO_EVOCHAINE: (state, payload) => {
             Array.prototype.push.apply(state.pokemon.evo_chain, payload);
-            state.IsLoaded = false;
+            state.IsLoad = false;
         },
-        ISLOADED: (state, payload) => {
-            state.IsLoaded = payload
+        ISLOAD: (state, payload) => {
+            state.IsLoad = payload
         },
         DESTROY: (state) => {
             state.pokemones.length = 0;
@@ -108,8 +108,8 @@ export default {
         pokemones(state) {
             return state.pokemones
         },
-        IsLoaded(state) {
-            return state.IsLoaded
+        IsLoad(state) {
+            return state.IsLoad
         },
         GET_UNO_POKEMON(state) {
             return state.pokemon
@@ -117,7 +117,7 @@ export default {
     },
     actions: {
         get_pokemones: async (context, payload) => {
-            context.commit('ISLOADED', true)
+            context.commit('ISLOAD', true)
             fetch(context.state.baseURL + payload, {
                 method: 'GET',
 
@@ -126,29 +126,30 @@ export default {
 
                 .then(data => {
                     context.commit('NEXT', data.next);
-                    console.log(data.results)
+
                     return data;
                 })
                 .then(data => {
-                    console.log(data.results)
-                    Promise.all(data.results.map(function (pokemon) {
-                        return fetch(pokemon.url, { method: 'GET', })
-                    }))
-                        .then(responses => Promise.all(responses.map(r => r.json())))
-                        .then(results => {
-                            Promise.all(results.map(function(item){
-                                item.img = new Image();
-                                item.img.src = item.sprites.front_default
-                            }))
-                            
-                            return results
-                        })
-                        .then(results => context.commit('ADD_POKEMONES', results))
-
+                    context.dispatch("get_pokemones_deteils", data.results)
                 })
         },
+        get_pokemones_deteils: async (context, payload) => {
+            Promise.all(payload.map(function (pokemon) {
+                return fetch(pokemon.url, { method: 'GET', })
+            }))
+                .then(responses => Promise.all(responses.map(r => r.json())))
+                .then(results => {
+                    Promise.all(results.map(function (item) {
+                        item.img = new Image();
+                        item.img.src = item.sprites.front_default
+                    }))
+
+                    return results
+                })
+                .then(results => context.commit('ADD_POKEMONES', results))
+        },
         get_uno_pokemon: async (context, payload) => {
-            context.commit('ISLOADED', true)
+            context.commit('ISLOAD', true)
             fetch(payload, {
                 method: 'GET',
 
@@ -202,14 +203,14 @@ export default {
                                 })
                                 .then(chains => {
                                     Promise.all(chains.map(function (item) {
-                                        
-                                        return Promise.all(item.map( function (link) {
+
+                                        return Promise.all(item.map(function (link) {
                                             return fetch('https://pokeapi.co/api/v2/pokemon/' + link + '/', { method: 'GET', })
                                         }))
                                             .then(responses => Promise.all(responses.map(r => r.json())))
-                                            
+
                                     }))
-                                        
+
                                         .then(results => context.commit('ADD_UNO_INFO_EVOCHAINE', results))
                                 })
                         })

@@ -1,11 +1,11 @@
 <template>
   <div class="Container">
-    <template v-if="!IsLoaded">
+    <template v-if="!IsLoad">
       <div class="Pokemon">
         <div class="aside_pokemon" v-observe="pokemon.id? StatIsVisible : false">
           <img :src="pokemon.sprites.front_default" />
           <div class="stats_wrapper">
-            <transition-group tag="div" v-on:enter="statAnimate">
+            <transition-group tag="div" :css="false" @beforeEnter="beforeStatAnimate" v-on:enter="statAnimate">
               <div
                 v-show="Visible"
                 class="stats_wrapper-stat"
@@ -78,7 +78,7 @@
         </div>
         <div class="Pokemon-Evolution">
           <h1>Evolution stages</h1>
-          <div class="Pokemon-Evolution_wrapper">
+          <div class="Pokemon-Evolution_wrapper"  v-if="pokemon.evo_chain.length != 0">
             <div
               v-if="pokemon.evo_chain.length >1"
               :style="ArrowStyle1"
@@ -108,7 +108,7 @@
     </template>
 
     <div class="preloader">
-      <img v-show="IsLoaded" src="../assets/loading.svg" alt="preloader" decoding="sync" />
+      <img v-show="IsLoad" src="../assets/loading.svg" alt="preloader" decoding="sync" />
     </div>
   </div>
 </template>
@@ -131,8 +131,8 @@ export default {
     pokemon() {
       return this.$store.getters.GET_UNO_POKEMON;
     },
-    IsLoaded() {
-      return this.$store.getters.IsLoaded;
+    IsLoad() {
+      return this.$store.getters.IsLoad;
     },
     ArrowAmount1() {
       if (this.pokemon.evo_chain[1].length == 2) {
@@ -177,15 +177,21 @@ export default {
     StatIsVisible(isVisible) {
       this.Visible = isVisible;
     },
+    beforeStatAnimate(el) {
+      el.style.left = "-100%"
+    },
     statAnimate(el) {
       this.$velocity(
         el.lastChild.firstChild,
         {
-          left:
-            -(100 - this.pokemon.stats[el.dataset.index].base_stat / 2) + "%"
+          left: this.StatsOffset(this.pokemon.stats[el.dataset.index].base_stat) + "%"
         },
         { duration: 2000 }
       );
+    },
+    StatsOffset(base_stat){
+      return base_stat <= 200 ? -(100 - base_stat / 2) : 0
+      
     }
   },
   created() {

@@ -46,7 +46,7 @@ export default {
 
 <style scoped lang="scss">
 .pokecart {
-  opacity: 0;
+
 }
 .cart {
   position: relative;

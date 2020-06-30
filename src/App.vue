@@ -6,9 +6,6 @@
           <router-link to="/">Home</router-link>
         </div>
         <div>
-          <router-link to="/SomeContent">Some Content</router-link>
-        </div>
-        <div>
           <router-link to="/Pokedex">Pokedex</router-link>
         </div>
 
@@ -38,7 +35,7 @@ body,html{
     padding: .5em;
     display: flex;
     flex-flow: row nowrap;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     div{
       margin-right: 2em;
@@ -51,6 +48,7 @@ body,html{
 a {
   text-decoration: none;
   color: black;
+  cursor: pointer;
 }
 @keyframes preloader {
   from {

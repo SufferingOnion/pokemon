@@ -1,13 +1,11 @@
 <template>
   <div>
+    <search></search>
     <div class="Pokedex">
       <transition-group
         name="list"
         tag="div"
-        appear
-        :css="false"
-        v-on:before-enter="beforeEnter"
-        v-on:enter="Enter"
+        
       >
         <pocecart
           v-for="pokemon in pokemones"
@@ -17,15 +15,18 @@
         ></pocecart>
       </transition-group>
     </div>
+    <div class="Error" v-if="this.Error">
+      <p>Ничего не найдено, попробуйте другие параметры поиска.</p>
+    </div>
     <div
-      v-observe="(isonScrolling&&!IsLoaded) ? {
+      v-observe="(!this.IsSearched&&!IsLoad) ? {
         callback: preloaderVisible,
         throttle: 500
       } : false"
       class="preloader"
     >
-      <button v-if="!isonScrolling&&!IsLoaded" v-on:click="startInfiniteScroll">БОЛЬШЕ ПОКЕМОНОВ!!!</button>
-      <img v-show="IsLoaded" src="../assets/loading.svg" alt="preloader" />
+      <button v-if="this.IsSearched&&!IsLoad" v-on:click="startInfiniteScroll">БОЛЬШЕ ПОКЕМОНОВ!!!</button>
+      <img v-show="IsLoad" src="../assets/loading.svg" alt="preloader" />
     </div>
   </div>
 </template>
@@ -33,26 +34,49 @@
 <script>
 // @ is an alias to /src
 import pocecart from "@/components/pocecart.vue";
-
+import search from "@/components/search.vue";
 export default {
   name: "Pokedex",
   data() {
     return {
       offsetURL: 12,
-      offsetAnimation: 1,
-      isonScrolling: false
+      offsetAnimation: 1
     };
   },
   computed: {
     pokemones() {
+      if (this.IsSearched == true) {
+        return this.searched_pokemones;
+      } else {
+        return this.pokemones_list;
+      }
+    },
+    searched_pokemones() {
+      return this.$store.getters.searched_pokemones;
+    },
+    pokemones_list() {
       return this.$store.getters.pokemones;
     },
-    IsLoaded() {
-      return this.$store.getters.IsLoaded;
+    request() {
+      return this.$store.getters.request;
+    },
+    IsLoad() {
+      return this.$store.getters.IsLoad;
+    },
+    IsSearched() {
+      return this.$store.getters.IsSearched;
+    },
+    Error() {
+      return (
+        this.IsSearched &&
+        this.searched_pokemones.length == 0 &&
+        (this.request.pokemon != "" || this.request.type.length != 0)
+      );
     }
   },
   components: {
-    pocecart
+    pocecart,
+    search
   },
   methods: {
     offsetCounter() {
@@ -70,31 +94,30 @@ export default {
       }
     },
     startInfiniteScroll() {
-      this.isonScrolling = true;
+      this.$store.commit("IS_SEARCHED", false);
     },
     beforeEnter(el) {
-
-      this.$velocity(el, { opacity: 0, position: "relative", bottom: "75px"});
-
-
+      this.$velocity(el, { opacity: 0, position: "relative", bottom: "75px" });
     },
     Enter(el, done) {
       var vm = this;
       var delay = this.animationOffset() * 150;
       setTimeout(function() {
-        vm.$velocity(el, { opacity: 1, bottom: "0" },{duration: 1000}, { complete: done });
+        vm.$velocity(
+          el,
+          { opacity: 1, bottom: "0" },
+          { duration: 1000 },
+          { complete: done }
+        );
       }, delay);
-      
     },
     animationOffset() {
       if (this.offsetAnimation <= 12) {
-        return (this.offsetAnimation++);
+        return this.offsetAnimation++;
       } else {
         this.offsetAnimation = 1;
         return this.offsetAnimation++;
-        
       }
-      
     }
   },
   created() {
@@ -160,11 +183,22 @@ export default {
     animation: preloader 0.5s linear infinite;
   }
 }
+.Error {
+  padding: 0 7%;
+  width: 100%;
+  height: 10em;
+  p{
+    height: inherit;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
 .list-enter-active {
   position: relative;
   transition: all 0.5s ease-in-out;
 }
-.list-enter {
+.list-enter{
   &:nth-child(4n) {
     transform: translateX(70px);
     opacity: 0;
@@ -202,4 +236,11 @@ export default {
     opacity: 0;
   }
 }
+.list-leave-active{
+  transition: all 0.25s ease-in-out;
+}
+.list-leave-to{
+  opacity: 0;
+}
+
 </style>
