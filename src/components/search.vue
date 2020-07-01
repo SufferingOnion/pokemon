@@ -1,7 +1,7 @@
 <template>
   <form class="search" name="search" @submit.prevent="getSearch(pokemon, type)">
     <div class="search_input">
-      <input name="request" type="text" v-model="pokemon" />
+      <input name="request" type="text" placeholder=" " v-model="pokemon" />
       <label for="request">Name or ID</label>
       <button class="search_input-button" for="search">
         <img src="../assets/icons/search.svg" alt />
@@ -154,7 +154,7 @@ export default {
       transition: all 0.3s ease-in-out;
       opacity: 0.7;
     }
-    input:focus + label {
+    input:focus + label,input:not(:placeholder-shown)+ label {
       font-size: 12px;
       transform: translate3d(0, -150%, 0);
     }

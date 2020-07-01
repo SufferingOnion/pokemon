@@ -296,6 +296,7 @@ h1 {
         font-family: "Flexo-Medium", arial, sans-serif;
         font-size: 11px;
         span {
+          margin: 0;
           padding: 4px 4px;
           border-radius: 50%;
           position: absolute;
