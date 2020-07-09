@@ -1,24 +1,9 @@
 # pokemon
 
-## Project setup
-```
-npm install
-```
+## Demo
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+https://sufferingonion.github.io/pokemon/
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
